@@ -1,5 +1,5 @@
 {
-    "publisher":  "kermanx",
+    "publisher":  "Syde",
     "name":  "codetogether",
     "displayName":  "CodeTogether",
     "version":  "0.1.1",
@@ -7,14 +7,14 @@
     "packageManager":  "pnpm@10.28.0",
     "description":  "Real-time collaborative coding for VS Code.",
     "author":  {
-                   "name":  "_Kerman",
-                   "email":  "kermanx@qq.com",
-                   "url":  "https://github.com/kermanx"
+                   "name":  "syde-06",
+                   "email":  "sydneygonzales06@gmail.com",
+                   "url":  "https://github.com/syde-06"
                },
     "license":  "MIT",
     "repository":  {
                        "type":  "git",
-                       "url":  "git+https://github.com/kermanx/codetogether.git"
+                       "url":  "git+https://github.com/Syde-06/CodeTogether.git"
                    },
     "categories":  [
                        "Other"
