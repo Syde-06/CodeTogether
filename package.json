@@ -1,0 +1,669 @@
+{
+    "publisher":  "kermanx",
+    "name":  "codetogether",
+    "displayName":  "CodeTogether",
+    "version":  "0.1.1",
+    "private":  true,
+    "packageManager":  "pnpm@10.28.0",
+    "description":  "Real-time collaborative coding for VS Code.",
+    "author":  {
+                   "name":  "_Kerman",
+                   "email":  "kermanx@qq.com",
+                   "url":  "https://github.com/kermanx"
+               },
+    "license":  "MIT",
+    "repository":  {
+                       "type":  "git",
+                       "url":  "git+https://github.com/kermanx/codetogether.git"
+                   },
+    "categories":  [
+                       "Other"
+                   ],
+    "main":  "./dist/extension.cjs",
+    "icon":  "assets/icon.png",
+    "browser":  "./dist/browser.js",
+    "engines":  {
+                    "vscode":  "^1.99.0"
+                },
+    "activationEvents":  [
+                             "onStartupFinished",
+                             "onFileSystem:codetogether",
+                             "onCommand:codetogether.host",
+                             "onCommand:codetogether.join",
+                             "onCommand:codetogether.joinNewWindow"
+                         ],
+    "contributes":  {
+                        "commands":  [
+                                         {
+                                             "command":  "codetogether.host",
+                                             "title":  "Host a Session",
+                                             "category":  "CodeTogether"
+                                         },
+                                         {
+                                             "command":  "codetogether.join",
+                                             "title":  "Join a Session",
+                                             "category":  "CodeTogether"
+                                         },
+                                         {
+                                             "command":  "codetogether.joinNewWindow",
+                                             "title":  "Join a Session in New Window",
+                                             "category":  "CodeTogether"
+                                         },
+                                         {
+                                             "command":  "codetogether.leave",
+                                             "title":  "Leave Session",
+                                             "icon":  "$(sign-out)",
+                                             "category":  "CodeTogether"
+                                         },
+                                         {
+                                             "command":  "codetogether.stop",
+                                             "title":  "Stop Session",
+                                             "icon":  "$(stop-circle)",
+                                             "category":  "CodeTogether"
+                                         },
+                                         {
+                                             "command":  "codetogether.focusParticipant",
+                                             "title":  "Focus Participant",
+                                             "category":  "CodeTogether"
+                                         },
+                                         {
+                                             "command":  "codetogether.followParticipant",
+                                             "title":  "Follow Participant",
+                                             "icon":  "$(eye)",
+                                             "category":  "CodeTogether"
+                                         },
+                                         {
+                                             "command":  "codetogether.unfollowParticipant",
+                                             "title":  "Unfollow Participant",
+                                             "icon":  "$(eye-closed)",
+                                             "category":  "CodeTogether"
+                                         },
+                                         {
+                                             "command":  "codetogether.kickParticipant",
+                                             "title":  "Remove Participant",
+                                             "icon":  "$(trash)",
+                                             "category":  "CodeTogether"
+                                         },
+                                         {
+                                             "command":  "codetogether.revokeEditPermission",
+                                             "title":  "Make Participant View-Only",
+                                             "icon":  "$(lock)",
+                                             "category":  "CodeTogether"
+                                         },
+                                         {
+                                             "command":  "codetogether.grantEditPermission",
+                                             "title":  "Allow Participant Editing",
+                                             "icon":  "$(unlock)",
+                                             "category":  "CodeTogether"
+                                         },
+                                         {
+                                             "command":  "codetogether.copyInviteLink",
+                                             "title":  "Copy Invite Link",
+                                             "icon":  "$(add)",
+                                             "category":  "CodeTogether"
+                                         },
+                                         {
+                                             "command":  "codetogether.createSharedTerminal",
+                                             "title":  "Create Shared Terminal",
+                                             "icon":  "$(add)",
+                                             "category":  "CodeTogether"
+                                         },
+                                         {
+                                             "command":  "codetogether.focusSharedTerminal",
+                                             "title":  "Focus Shared Terminal",
+                                             "category":  "CodeTogether"
+                                         },
+                                         {
+                                             "command":  "codetogether.closeSharedTerminal",
+                                             "title":  "Close Shared Terminal",
+                                             "icon":  "$(close)",
+                                             "category":  "CodeTogether"
+                                         },
+                                         {
+                                             "command":  "codetogether.shareServer",
+                                             "title":  "Share Server",
+                                             "icon":  "$(add)",
+                                             "category":  "CodeTogether"
+                                         },
+                                         {
+                                             "command":  "codetogether.stopSharingServer",
+                                             "title":  "Stop Sharing Server",
+                                             "icon":  "$(stop-circle)",
+                                             "category":  "CodeTogether"
+                                         },
+                                         {
+                                             "command":  "codetogether.connectToSharedServer",
+                                             "title":  "Connect to Shared Server",
+                                             "icon":  "$(plug)",
+                                             "category":  "CodeTogether"
+                                         },
+                                         {
+                                             "command":  "codetogether.disconnectFromSharedServer",
+                                             "title":  "Disconnect from Shared Server",
+                                             "icon":  "$(debug-disconnect)",
+                                             "category":  "CodeTogether"
+                                         },
+                                         {
+                                             "command":  "codetogether.copySharedServerLocalURL",
+                                             "title":  "Copy Shared Server Local URL",
+                                             "category":  "CodeTogether"
+                                         },
+                                         {
+                                             "command":  "codetogether.executeHostCommand",
+                                             "title":  "Dummy command",
+                                             "category":  "CodeTogether"
+                                         },
+                                         {
+                                             "command":  "codetogether.scm.openChange",
+                                             "title":  "Open Changes",
+                                             "category":  "CodeTogether Source Control",
+                                             "icon":  {
+                                                          "light":  "images/light/open-change.svg",
+                                                          "dark":  "images/dark/open-change.svg"
+                                                      }
+                                         },
+                                         {
+                                             "command":  "codetogether.scm.openFile",
+                                             "title":  "Open File",
+                                             "category":  "CodeTogether Source Control",
+                                             "icon":  "$(go-to-file)"
+                                         },
+                                         {
+                                             "command":  "codetogether.scm.clean",
+                                             "title":  "Discard Changes",
+                                             "category":  "CodeTogether Source Control",
+                                             "icon":  "$(discard)"
+                                         },
+                                         {
+                                             "command":  "codetogether.scm.cleanAll",
+                                             "title":  "Discard All Changes",
+                                             "category":  "CodeTogether Source Control",
+                                             "icon":  "$(discard)"
+                                         },
+                                         {
+                                             "command":  "codetogether.scm.revertChange",
+                                             "title":  "Revert Changes",
+                                             "category":  "CodeTogether Source Control",
+                                             "icon":  "$(discard)"
+                                         }
+                                     ],
+                        "views":  {
+                                      "explorer":  [
+                                                       {
+                                                           "id":  "codetogether.participants",
+                                                           "name":  "Participants",
+                                                           "type":  "tree",
+                                                           "when":  "codetogether:inSession"
+                                                       },
+                                                       {
+                                                           "id":  "codetogether.terminals",
+                                                           "name":  "Terminals",
+                                                           "type":  "tree",
+                                                           "when":  "codetogether:inSession"
+                                                       },
+                                                       {
+                                                           "id":  "codetogether.tunnels",
+                                                           "name":  "Shared Servers",
+                                                           "type":  "tree",
+                                                           "when":  "codetogether:inSession \u0026\u0026 codetogether:supportsTunnels"
+                                                       },
+                        {
+                            "id":  "codetogether.webview",
+                            "name":  "",
+                            "type":  "webview"
+                        },
+                        {
+                            "id":  "codetogether.status",
+                            "name":  "CodeTogether Status",
+                            "type":  "tree",
+                            "when":  "codetogether:inSession"
+                        }
+                    ]
+                                  },
+                        "menus":  {
+                                      "view/title":  [
+                                                         {
+                                                             "command":  "codetogether.stop",
+                                                             "when":  "view == codetogether.participants \u0026\u0026 codetogether:isHost",
+                                                             "group":  "navigation"
+                                                         },
+                                                         {
+                                                             "command":  "codetogether.copyInviteLink",
+                                                             "when":  "view == codetogether.participants",
+                                                             "group":  "navigation"
+                                                         },
+                                                         {
+                                                             "command":  "codetogether.leave",
+                                                             "when":  "view == codetogether.participants \u0026\u0026 codetogether:isGuest",
+                                                             "group":  "navigation"
+                                                         },
+                                                         {
+                                                             "command":  "codetogether.createSharedTerminal",
+                                                             "when":  "view == codetogether.terminals",
+                                                             "group":  "navigation"
+                                                         },
+                                                         {
+                                                             "command":  "codetogether.shareServer",
+                                                             "when":  "view == codetogether.tunnels",
+                                                             "group":  "navigation"
+                                                         }
+                                                     ],
+                                      "view/item/context":  [
+                                                                {
+                                                                    "command":  "codetogether.followParticipant",
+                                                                    "when":  "view == codetogether.participants \u0026\u0026 viewItem =~ /not-following/",
+                                                                    "group":  "inline"
+                                                                },
+                                                                {
+                                                                    "command":  "codetogether.unfollowParticipant",
+                                                                    "when":  "view == codetogether.participants \u0026\u0026 viewItem =~ /is-following/",
+                                                                    "group":  "inline"
+                                                                },
+                                                                {
+                                                                    "command":  "codetogether.focusParticipant",
+                                                                    "when":  "view == codetogether.participants",
+                                                                    "group":  "navigation@1"
+                                                                },
+                                                                {
+                                                                    "command":  "codetogether.revokeEditPermission",
+                                                                    "when":  "view == codetogether.participants \u0026\u0026 viewItem =~ /host-controls/ \u0026\u0026 viewItem =~ /can-edit/",
+                                                                    "group":  "navigation@3"
+                                                                },
+                                                                {
+                                                                    "command":  "codetogether.grantEditPermission",
+                                                                    "when":  "view == codetogether.participants \u0026\u0026 viewItem =~ /host-controls/ \u0026\u0026 viewItem =~ /read-only/",
+                                                                    "group":  "navigation@3"
+                                                                },
+                                                                {
+                                                                    "command":  "codetogether.kickParticipant",
+                                                                    "when":  "view == codetogether.participants \u0026\u0026 viewItem =~ /host-controls/",
+                                                                    "group":  "navigation@4"
+                                                                },
+                                                                {
+                                                                    "command":  "codetogether.closeSharedTerminal",
+                                                                    "when":  "view == codetogether.terminals",
+                                                                    "group":  "inline"
+                                                                },
+                                                                {
+                                                                    "command":  "codetogether.stopSharingServer",
+                                                                    "when":  "view == codetogether.tunnels \u0026\u0026 viewItem == serving",
+                                                                    "group":  "inline"
+                                                                },
+                                                                {
+                                                                    "command":  "codetogether.connectToSharedServer",
+                                                                    "when":  "view == codetogether.tunnels \u0026\u0026 viewItem == available",
+                                                                    "group":  "inline"
+                                                                },
+                                                                {
+                                                                    "command":  "codetogether.disconnectFromSharedServer",
+                                                                    "when":  "view == codetogether.tunnels \u0026\u0026 viewItem == connected",
+                                                                    "group":  "inline"
+                                                                }
+                                                            ],
+                                      "statusBar/remoteIndicator":  [
+                                                                        {
+                                                                            "command":  "codetogether.host",
+                                                                            "group":  "virtualfs_00_codetogether_kermanx",
+                                                                            "when":  "!codetogether:inSession"
+                                                                        },
+                                                                        {
+                                                                            "command":  "codetogether.join",
+                                                                            "group":  "virtualfs_00_codetogether_kermanx",
+                                                                            "when":  "!codetogether:inSession"
+                                                                        },
+                                                                        {
+                                                                            "command":  "codetogether.joinNewWindow",
+                                                                            "group":  "virtualfs_00_codetogether_kermanx",
+                                                                            "when":  "!codetogether:inSession"
+                                                                        },
+                                                                        {
+                                                                            "command":  "codetogether.stop",
+                                                                            "group":  "virtualfs_00_codetogether_kermanx",
+                                                                            "when":  "codetogether:isHost"
+                                                                        },
+                                                                        {
+                                                                            "command":  "codetogether.leave",
+                                                                            "group":  "virtualfs_00_codetogether_kermanx",
+                                                                            "when":  "codetogether:isGuest"
+                                                                        },
+                                                                        {
+                                                                            "command":  "codetogether.copyInviteLink",
+                                                                            "group":  "virtualfs_00_codetogether_kermanx",
+                                                                            "when":  "codetogether:inSession"
+                                                                        }
+                                                                    ],
+                                      "scm/resourceGroup/context":  [
+                                                                        {
+                                                                            "command":  "codetogether.scm.cleanAll",
+                                                                            "when":  "scmProvider == codetogether-scm \u0026\u0026 scmResourceGroup =~ /\\(clean\\)/",
+                                                                            "group":  "inline"
+                                                                        },
+                                                                        {
+                                                                            "command":  "codetogether.scm.cleanAll",
+                                                                            "when":  "scmProvider == codetogether-scm \u0026\u0026 scmResourceGroup =~ /\\(clean\\)/",
+                                                                            "group":  "1_modification"
+                                                                        }
+                                                                    ],
+                                      "scm/resourceState/context":  [
+                                                                        {
+                                                                            "command":  "codetogether.scm.openFile",
+                                                                            "when":  "scmProvider == codetogether-scm \u0026\u0026 scmResourceGroup =~ /\\(openFile\\)/",
+                                                                            "group":  "navigation"
+                                                                        },
+                                                                        {
+                                                                            "command":  "codetogether.scm.openChange",
+                                                                            "when":  "scmProvider == codetogether-scm \u0026\u0026 scmResourceGroup =~ /\\(openChanges\\)/",
+                                                                            "group":  "navigation"
+                                                                        },
+                                                                        {
+                                                                            "command":  "codetogether.scm.clean",
+                                                                            "when":  "scmProvider == codetogether-scm \u0026\u0026 scmResourceGroup =~ /\\(clean\\)/",
+                                                                            "group":  "1_modification"
+                                                                        },
+                                                                        {
+                                                                            "command":  "codetogether.scm.openFile",
+                                                                            "when":  "scmProvider == codetogether-scm \u0026\u0026 scmResourceGroup =~ /\\(openFile\\)/",
+                                                                            "group":  "inline@0"
+                                                                        },
+                                                                        {
+                                                                            "command":  "codetogether.scm.clean",
+                                                                            "when":  "scmProvider == codetogether-scm \u0026\u0026 scmResourceGroup =~ /\\(clean\\)/",
+                                                                            "group":  "inline@1"
+                                                                        }
+                                                                    ],
+                                      "scm/change/title":  [
+                                                               {
+                                                                   "command":  "codetogether.scm.revertChange",
+                                                                   "when":  "originalResourceScheme == codetogether-scm"
+                                                               }
+                                                           ],
+                                      "commandPalette":  [
+                                                             {
+                                                                 "command":  "codetogether.host",
+                                                                 "when":  "!codetogether:inSession"
+                                                             },
+                                                             {
+                                                                 "command":  "codetogether.join",
+                                                                 "when":  "!codetogether:inSession"
+                                                             },
+                                                             {
+                                                                 "command":  "codetogether.joinNewWindow",
+                                                                 "when":  "!codetogether:inSession"
+                                                             },
+                                                             {
+                                                                 "command":  "codetogether.stop",
+                                                                 "when":  "codetogether:isHost"
+                                                             },
+                                                             {
+                                                                 "command":  "codetogether.leave",
+                                                                 "when":  "codetogether:isGuest"
+                                                             },
+                                                             {
+                                                                 "command":  "codetogether.focusParticipant",
+                                                                 "when":  "codetogether:inSession"
+                                                             },
+                                                             {
+                                                                 "command":  "codetogether.followParticipant",
+                                                                 "when":  "codetogether:inSession"
+                                                             },
+                                                             {
+                                                                 "command":  "codetogether.unfollowParticipant",
+                                                                 "when":  "codetogether:inSession"
+                                                             },
+                                                             {
+                                                                 "command":  "codetogether.copyInviteLink",
+                                                                 "when":  "codetogether:inSession"
+                                                             },
+                                                             {
+                                                                 "command":  "codetogether.createSharedTerminal",
+                                                                 "when":  "codetogether:inSession"
+                                                             },
+                                                             {
+                                                                 "command":  "codetogether.focusSharedTerminal",
+                                                                 "when":  "false"
+                                                             },
+                                                             {
+                                                                 "command":  "codetogether.closeSharedTerminal",
+                                                                 "when":  "false"
+                                                             },
+                                                             {
+                                                                 "command":  "codetogether.shareServer",
+                                                                 "when":  "codetogether:inSession \u0026\u0026 codetogether:supportsTunnels"
+                                                             },
+                                                             {
+                                                                 "command":  "codetogether.stopSharingServer",
+                                                                 "when":  "codetogether:inSession \u0026\u0026 codetogether:supportsTunnels"
+                                                             },
+                                                             {
+                                                                 "command":  "codetogether.connectToSharedServer",
+                                                                 "when":  "codetogether:inSession \u0026\u0026 codetogether:supportsTunnels"
+                                                             },
+                                                             {
+                                                                 "command":  "codetogether.disconnectFromSharedServer",
+                                                                 "when":  "codetogether:inSession \u0026\u0026 codetogether:supportsTunnels"
+                                                             },
+                                                             {
+                                                                 "command":  "codetogether.copySharedServerLocalURL",
+                                                                 "when":  "false"
+                                                             },
+                                                             {
+                                                                 "command":  "codetogether.executeHostCommand",
+                                                                 "when":  "false"
+                                                             },
+                                                             {
+                                                                 "command":  "codetogether.scm.openFile",
+                                                                 "when":  "false"
+                                                             },
+                                                             {
+                                                                 "command":  "codetogether.scm.openChange",
+                                                                 "when":  "false"
+                                                             },
+                                                             {
+                                                                 "command":  "codetogether.scm.clean",
+                                                                 "when":  "false"
+                                                             },
+                                                             {
+                                                                 "command":  "codetogether.scm.cleanAll",
+                                                                 "when":  "false"
+                                                             },
+                                                             {
+                                                                 "command":  "codetogether.scm.revertChange",
+                                                                 "when":  "false"
+                                                             }
+                                                         ]
+                                  },
+                        "viewsWelcome":  [
+                                             {
+                                                 "view":  "codetogether.participants",
+                                                 "contents":  "Invite others to join your session by sharing the link. \n[Copy Link](command:codetogether.copyInviteLink)",
+                                                 "when":  "codetogether:inSession"
+                                             },
+                                             {
+                                                 "view":  "codetogether.terminals",
+                                                 "contents":  "A shared terminal allows all participants to see the terminal output and input commands. \n[Create Terminal](command:codetogether.createSharedTerminal)",
+                                                 "when":  "codetogether:inSession"
+                                             },
+                                             {
+                                                 "view":  "codetogether.tunnels",
+                                                 "contents":  "Share a local server with all participants. \n[Share Server](command:codetogether.shareServer)",
+                                                 "when":  "codetogether:inSession \u0026\u0026 codetogether:supportsTunnels"
+                                             }
+                                         ],
+                        "configuration":  {
+                                              "title":  "CodeTogether",
+                                              "properties":  {
+                                                                 "codetogether.servers":  {
+                                                                                              "type":  "array",
+                                                                                              "default":  [
+
+                                                                                                          ],
+                                                                                              "description":  "List of custom servers",
+                                                                                              "items":  {
+                                                                                                            "type":  "string"
+                                                                                                        }
+                                                                                          },
+                                                                  "codetogether.userName":  {
+                                                                                               "type":  "string",
+                                                                                               "default":  "",
+                                                                                               "description":  "User name to display to other participants. If empty, will detect from available accounts or ask for a name."
+                                                                                           },
+                                                                  "codetogether.approveGuests":  {
+                                                                                                     "type":  "boolean",
+                                                                                                     "default":  true,
+                                                                                                     "description":  "Ask the host to approve each guest before they join."
+                                                                                                 },
+                                                                  "codetogether.defaultGuestCanEdit":  {
+                                                                                                           "type":  "boolean",
+                                                                                                           "default":  true,
+                                                                                                           "description":  "Allow newly approved guests to edit by default."
+                                                                                                       },
+                                                                  "codetogether.trystero":  {
+                                                                                               "type":  "object",
+                                                                                               "default":  {
+
+                                                                                                           },
+                                                                                               "description":  "The first parameter of trystero.joinRoom, see https://github.com/dmotz/trystero."
+                                                                                           },
+                                                                 "codetogether.terminal.dimensionsSource":  {
+                                                                                                                "type":  "string",
+                                                                                                                "enum":  [
+                                                                                                                             "host",
+                                                                                                                             "creator",
+                                                                                                                             "minimum",
+                                                                                                                             "maximum"
+                                                                                                                         ],
+                                                                                                                "default":  "minimum",
+                                                                                                                "description":  "Determines how terminal dimensions are calculated for shared terminals."
+                                                                                                            }
+                                                             }
+                                          },
+                        "terminal":  {
+                                         "profiles":  [
+                                                          {
+                                                              "id":  "codetogether.sharedTerminal",
+                                                              "title":  "Shared Terminal",
+                                                              "icon":  "live-share"
+                                                          }
+                                                      ]
+                                     },
+                        "colors":  [
+                                       {
+                                           "id":  "codetogether.participant.loading",
+                                           "description":  "Color for loading participant",
+                                           "defaults":  {
+                                                            "dark":  "#808080",
+                                                            "light":  "#808080"
+                                                        }
+                                       },
+                                       {
+                                           "id":  "codetogether.participant.1",
+                                           "description":  "Color for participant 1",
+                                           "defaults":  {
+                                                            "dark":  "#ffb900",
+                                                            "light":  "#ffb900"
+                                                        }
+                                       },
+                                       {
+                                           "id":  "codetogether.participant.2",
+                                           "description":  "Color for participant 2",
+                                           "defaults":  {
+                                                            "dark":  "#107c10",
+                                                            "light":  "#107c10"
+                                                        }
+                                       },
+                                       {
+                                           "id":  "codetogether.participant.3",
+                                           "description":  "Color for participant 3",
+                                           "defaults":  {
+                                                            "dark":  "#b4009e",
+                                                            "light":  "#b4009e"
+                                                        }
+                                       },
+                                       {
+                                           "id":  "codetogether.participant.4",
+                                           "description":  "Color for participant 4",
+                                           "defaults":  {
+                                                            "dark":  "#ff8c00",
+                                                            "light":  "#ff8c00"
+                                                        }
+                                       },
+                                       {
+                                           "id":  "codetogether.participant.5",
+                                           "description":  "Color for participant 5",
+                                           "defaults":  {
+                                                            "dark":  "#e3008c",
+                                                            "light":  "#e3008c"
+                                                        }
+                                       },
+                                       {
+                                           "id":  "codetogether.participant.6",
+                                           "description":  "Color for participant 6",
+                                           "defaults":  {
+                                                            "dark":  "#5c2d91",
+                                                            "light":  "#5c2d91"
+                                                        }
+                                       },
+                                       {
+                                           "id":  "codetogether.participant.7",
+                                           "description":  "Color for participant 7",
+                                           "defaults":  {
+                                                            "dark":  "#fff100",
+                                                            "light":  "#fff100"
+                                                        }
+                                       },
+                                       {
+                                           "id":  "codetogether.participant.8",
+                                           "description":  "Color for participant 8",
+                                           "defaults":  {
+                                                            "dark":  "#b4a0ff",
+                                                            "light":  "#b4a0ff"
+                                                        }
+                                       }
+                                   ]
+                    },
+    "scripts":  {
+                    "build":  "tsdown --env.NODE_ENV production --minify --clean",
+                    "dev":  "tsdown --watch --env.NODE_ENV development",
+                    "typecheck":  "tsc --noEmit",
+                    "compile":  "npm run build",
+                    "vscode:prepublish":  "npm run build",
+                    "browser":  "vscode-test-web --quality stable --browser none --extensionDevelopmentPath=. ./test-workspace",
+                    "wsserver":  "tsx --watch ./src/sync/ws/cli.ts",
+                    "lint":  "eslint . --cache",
+                    "release":  "bumpp package.json src/sync/ws/package.json"
+                },
+    "devDependencies":  {
+                            "@antfu/eslint-config":  "^7.0.1",
+                            "@types/node":  "^20.19.30",
+                            "@types/picomatch":  "^4.0.3",
+                            "@types/vscode":  "^1.99.0",
+                            "@types/ws":  "^8.18.1",
+                            "@vscode-elements/elements":  "^2.4.0",
+                            "@vscode/test-web":  "^0.0.78",
+                            "birpc":  "^4.0.0",
+                            "bumpp":  "^10.4.0",
+                            "eslint":  "^9.39.2",
+                            "eslint-plugin-format":  "^1.3.1",
+                            "get-port":  "^7.1.0",
+                            "lib0":  "^0.2.117",
+                            "msgpackr":  "^1.11.9",
+                            "nanoid":  "^5.1.6",
+                            "pathe":  "^2.0.3",
+                            "picomatch":  "^4.0.4",
+                            "reactive-vscode":  "^1.0.1",
+                            "trystero":  "^0.22.0",
+                            "tsdown":  "^0.19.0",
+                            "tsx":  "^4.21.0",
+                            "typescript":  "^5.9.3",
+                            "vscode-languageclient":  "^10.0.0-next.19",
+                            "vscode-languageserver":  "^10.0.0-next.16",
+                            "vue":  "^3.5.26",
+                            "ws":  "^8.19.0",
+                            "y-protocols":  "^1.0.7",
+                            "yjs":  "^13.6.29"
+                        },
+    "optionalDependencies":  {
+                                 "@vscode/windows-process-tree":  "^0.6.3",
+                                 "node-pty":  "^1.2.0-beta.6"
+                             }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "codetogether-ws-server",
+  "type": "module",
+  "version": "0.1.1",
+  "description": "WebSocket server for CodeTogether",
+  "author": {
+    "name": "_Kerman",
+    "email": "kermanx@qq.com",
+    "url": "https://github.com/kermanx"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kermanx/codetogether.git"
+  },
+  "bin": {
+    "codetogether-ws": "./cli.ts"
+  },
+  "files": [
+    "README.md",
+    "cli.ts",
+    "protocol.ts",
+    "server.ts"
+  ],
+  "devDependencies": {
+    "@types/ws": "^8.18.1",
+    "ws": "^8.18.3"
+  }
+}

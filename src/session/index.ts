@@ -1,0 +1,275 @@
+import { computed, defineService, onScopeDispose, shallowRef, useCommand, useVscodeContext, watch } from 'reactive-vscode'
+import { commands, env, Uri, window, workspace } from 'vscode'
+import { version } from '../../package.json'
+import { CustomUriScheme } from '../fs/provider'
+import { copyShareLink, inquireHostConfig, makeTrackUri, parseTrackUri, validateShareLink } from '../sync/share'
+import { useUsers } from '../ui/users'
+import { useWebview } from '../webview'
+import { createGuestSession } from './guest'
+import { createHostSession } from './host'
+
+export const useActiveSession = defineService(() => {
+  const session = shallowRef<null
+    | Awaited<ReturnType<typeof createHostSession>>
+    | Awaited<ReturnType<typeof createGuestSession>>
+  >(null)
+  const isJoining = shallowRef(true)
+
+  setTimeout(async () => {
+    const folder = workspace.workspaceFolders?.find(folder => folder.uri.scheme === CustomUriScheme)
+    try {
+      if (folder) {
+        await joinImpl(folder.uri)
+      }
+    }
+    finally {
+      isJoining.value = false
+    }
+  })
+
+  function toTrackUri(uri: Uri) {
+    if (!session.value) {
+      throw new Error('Not in a session')
+    }
+    if (session.value.role === 'guest') {
+      return uri
+    }
+    return session.value.connection.toTrackUri(uri)
+  }
+
+  function toLocalUri(uri: Uri) {
+    if (!session.value) {
+      throw new Error('Not in a session')
+    }
+    if (session.value.role === 'guest') {
+      return uri
+    }
+    return session.value.connection.toHostUri(uri)
+  }
+
+  async function host() {
+    if (session.value) {
+      window.showErrorMessage('You are already in a session.')
+      return
+    }
+    if (isJoining.value) {
+      return
+    }
+    isJoining.value = true
+    try {
+      const [config, _] = await Promise.all([
+        inquireHostConfig(),
+        useWebview().ensureReady(),
+      ])
+      if (!config) {
+        return
+      }
+
+      try {
+        session.value = await createHostSession(config)
+      }
+      catch (error: any) {
+        console.error(error)
+        window.showErrorMessage(
+          'CodeTogether: Failed to start hosting.',
+          {
+            modal: true,
+            detail: error?.message || String(error),
+          },
+        )
+        return
+      }
+
+      copyShareLink(config, true)
+    }
+    finally {
+      isJoining.value = false
+    }
+  }
+
+  async function join(newWindow: boolean | 'auto') {
+    if (session.value) {
+      window.showErrorMessage('You are already in a session.')
+      return
+    }
+    if (isJoining.value) {
+      return
+    }
+    isJoining.value = true
+    try {
+      const clipboard = await env.clipboard.readText()
+      const uriStr = await window.showInputBox({
+        prompt: 'Enter URI',
+        // placeHolder: 'room-id',
+        value: validateShareLink(clipboard) === null ? clipboard : undefined,
+        validateInput: validateShareLink,
+      })
+      if (!uriStr) {
+        return
+      }
+      let uri = Uri.parse(uriStr.trim())
+      if (uri.path === '') {
+        uri = uri.with({ path: '/' })
+      }
+
+      if (newWindow) {
+        commands.executeCommand('vscode.openFolder', uri, newWindow === 'auto'
+          ? undefined
+          : {
+              forceNewWindow: newWindow,
+              forceReuseWindow: !newWindow,
+            })
+      }
+      else {
+        const parsed = parseTrackUri(uri)
+        workspace.updateWorkspaceFolders(0, workspace.workspaceFolders?.length ?? 0, {
+          uri,
+          name: `CodeTogether (${parsed?.roomId})`,
+        })
+        await joinImpl(uri)
+      }
+    }
+    finally {
+      isJoining.value = false
+    }
+  }
+
+  async function joinImpl(uri: Uri) {
+    const parsed = parseTrackUri(uri)
+    if (!parsed) {
+      window.showErrorMessage(
+        'CodeTogether: Invalid Invite Link.',
+        {
+          modal: true,
+          detail: 'The link you provided is not valid. Please check and try again. A valid link looks like: codetogether://ws.room.domain:port/ or codetogether://trystero.room.mqtt/',
+        },
+      )
+      return
+    }
+
+    const { inquireUserName } = useUsers()
+
+    const [name, _] = await Promise.all([
+      inquireUserName(false),
+      useWebview().ensureReady(),
+    ])
+    if (!name) {
+      return
+    }
+
+    try {
+      session.value = await createGuestSession(parsed)
+    }
+    catch (error: any) {
+      console.error(error)
+      window.showErrorMessage(
+        'CodeTogether: Failed to join the session.',
+        {
+          modal: true,
+          detail: error?.message || String(error),
+        },
+      )
+    }
+  }
+
+  async function leave() {
+    if (!session.value) {
+      window.showErrorMessage('You are not in a session.')
+      return
+    }
+
+    const wasGuest = session.value.role === 'guest'
+
+    const res = await window.showInformationMessage(
+      wasGuest ? 'Confirm to leave the session?' : 'Confirm to stop sharing the session?',
+      {
+        modal: true,
+        detail: wasGuest ? 'Unsaved changes may be lost.' : 'You will stop sharing the workspace and all guests will be disconnected.',
+      },
+      'Leave',
+    )
+
+    if (res === 'Leave') {
+      session.value = null
+      if (wasGuest) {
+        workspace.updateWorkspaceFolders(0, workspace.workspaceFolders?.length)
+      }
+      window.showInformationMessage('You have left the session.')
+    }
+  }
+
+  watch(session, (_, oldState) => oldState?.scope.stop())
+  onScopeDispose(() => session.value?.scope.stop())
+
+  useVscodeContext('codetogether:inSession', computed(() => !!session.value))
+  useVscodeContext('codetogether:isHost', computed(() => session.value?.role === 'host'))
+  useVscodeContext('codetogether:isGuest', computed(() => session.value?.role === 'guest'))
+
+  useCommand('codetogether.host', host)
+  useCommand('codetogether.join', () => join(false))
+  useCommand('codetogether.joinNewWindow', () => join(true))
+  useCommand('codetogether.leave', leave)
+  useCommand('codetogether.stop', leave)
+  useCommand('codetogether.copyInviteLink', () => {
+    if (session.value?.connection) {
+      copyShareLink(session.value?.connection.config)
+    }
+    else {
+      window.showErrorMessage('Not in a session.')
+    }
+  })
+
+  return {
+    state: session,
+    role: computed(() => session.value?.role),
+    doc: computed(() => session.value?.doc),
+    selfId: computed(() => session.value?.connection.selfId),
+    hostId: computed(() => session.value?.hostId),
+    hostMeta: computed(() => session.value?.hostMeta),
+    peers: computed(() => session.value?.connection.peers.value),
+    connection: computed(() => session.value?.connection),
+    shadowTerminals: computed(() => session.value?.shadowTerminals),
+    tunnels: computed(() => session.value?.tunnels),
+    isJoining,
+    makeTrackUri,
+    toTrackUri,
+    toLocalUri,
+    host,
+    join,
+    leave,
+  }
+})
+
+export function onSessionClosed(options: {
+  title: string
+  detail: string
+}, allowReconnect = true) {
+  const { state } = useActiveSession()
+  if (!state.value) {
+    return
+  }
+  const config = state.value.connection.config
+  const creator = state.value.role === 'host' ? createHostSession : createGuestSession
+  const wasGuest = state.value.role === 'guest'
+
+  state.value = null
+  if (wasGuest && !allowReconnect) {
+    workspace.updateWorkspaceFolders(0, workspace.workspaceFolders?.length)
+  }
+  const delay = new Promise(resolve => setTimeout(resolve, 500))
+  window.showErrorMessage(
+    options.title,
+    {
+      modal: true,
+      detail: options.detail,
+    },
+    ...(allowReconnect ? ['Reconnect'] as const : []),
+  ).then(async (choice) => {
+    if (allowReconnect && choice === 'Reconnect') {
+      await delay
+      state.value = await creator(config)
+    }
+  })
+}
+
+export const ProtocolVersion = version

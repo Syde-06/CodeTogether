@@ -1,0 +1,8 @@
+.DS_Store
+codetogether-ws-server
+ws-server
+*.exe
+*.test
+*.out
+.vscode/
+*.zip
